@@ -76,10 +76,8 @@ function addTask() {
     renderTasks();
     updateStats();
     
-    // Check if "toodoo voodoo" task was added - activate vibrant theme
-    if (taskText.toLowerCase() === 'toodoo voodoo') {
-        activateVoodooTheme();
-    }
+    // Check if voodoo theme should be activated (handles "toodoo voodoo" task)
+    checkVoodooTheme();
     
     // Clear inputs and focus
     taskInput.value = '';
@@ -631,20 +629,15 @@ function checkVoodooTheme() {
     const hasVoodooTask = tasks.some(t => t.text.toLowerCase() === 'toodoo voodoo');
     const currentTheme = localStorage.getItem('toodoo-theme') || 'light';
     
-    if (hasVoodooTask) {
+    if (hasVoodooTask && currentTheme !== 'voodoo') {
         // Activate voodoo theme if not already active
-        if (currentTheme !== 'voodoo') {
-            activateVoodooTheme();
-        } else {
-            document.body.setAttribute('data-theme', 'voodoo');
-        }
-    } else {
+        activateVoodooTheme();
+    } else if (!hasVoodooTask && currentTheme === 'voodoo') {
         // Deactivate voodoo theme if currently active
-        if (currentTheme === 'voodoo') {
-            deactivateVoodooTheme();
-        } else {
-            document.body.setAttribute('data-theme', currentTheme);
-        }
+        deactivateVoodooTheme();
+    } else {
+        // Apply current theme from localStorage
+        document.body.setAttribute('data-theme', currentTheme);
     }
 }
 
