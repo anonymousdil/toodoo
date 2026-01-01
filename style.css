@@ -722,11 +722,6 @@ header h1 {
 
     .input-section {
         flex-direction: column;
-        gap: 12px;
-    }
-    
-    #addBtn {
-        width: 100%;
     }
 
     .stats {
