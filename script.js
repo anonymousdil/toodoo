@@ -17,6 +17,13 @@ let searchQuery = '';
 let filterStatus = 'all'; // all, active, completed, overdue
 let draggedTask = null;
 
+// Helper function to escape HTML
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
 // Load tasks from localStorage on page load
 document.addEventListener('DOMContentLoaded', () => {
     loadTasks();
@@ -236,7 +243,7 @@ function createTaskElement(task) {
             dateText += ' (Overdue!)';
         }
         
-        dueDate.innerHTML = `📅 ${dateText}`;
+        dueDate.textContent = `📅 ${dateText}`;
         taskContent.appendChild(dueDate);
     }
     
@@ -323,7 +330,22 @@ function editTask(id) {
     
     const newDate = prompt('Edit due date (YYYY-MM-DD):', task.dueDate || '');
     if (newDate !== null) {
-        task.dueDate = newDate || null;
+        // Validate date format
+        if (newDate.trim() === '') {
+            task.dueDate = null;
+        } else if (/^\d{4}-\d{2}-\d{2}$/.test(newDate)) {
+            const date = new Date(newDate);
+            // Check if date is valid
+            if (!isNaN(date.getTime())) {
+                task.dueDate = newDate;
+            } else {
+                alert('Invalid date. Please use format YYYY-MM-DD');
+                return;
+            }
+        } else {
+            alert('Invalid date format. Please use YYYY-MM-DD');
+            return;
+        }
     }
     
     saveTasks();
@@ -344,10 +366,15 @@ function updateStats() {
     
     // Update progress bar
     const progressBar = document.getElementById('progress-bar');
-    if (progressBar && total > 0) {
-        const percentage = (completed / total) * 100;
-        progressBar.style.width = percentage + '%';
-        progressBar.textContent = Math.round(percentage) + '%';
+    if (progressBar) {
+        if (total > 0) {
+            const percentage = (completed / total) * 100;
+            progressBar.style.width = percentage + '%';
+            progressBar.textContent = Math.round(percentage) + '%';
+        } else {
+            progressBar.style.width = '0%';
+            progressBar.textContent = '0%';
+        }
     }
     
     // Disable clear completed button if no completed tasks
@@ -421,8 +448,10 @@ function renderCalendarView(filteredTasks) {
             <div class="day-tasks">`;
         
         tasksOnDay.forEach(task => {
-            html += `<div class="calendar-task ${task.completed ? 'completed' : ''}" title="${task.text}">
-                ${task.text.substring(0, 15)}${task.text.length > 15 ? '...' : ''}
+            const escapedText = escapeHtml(task.text);
+            const displayText = task.text.length > 15 ? task.text.substring(0, 15) + '...' : task.text;
+            html += `<div class="calendar-task ${task.completed ? 'completed' : ''}" title="${escapedText}">
+                ${escapeHtml(displayText)}
             </div>`;
         });
         
@@ -465,10 +494,12 @@ function renderKanbanView(filteredTasks) {
 }
 
 function createKanbanCard(task) {
+    const escapedText = escapeHtml(task.text);
+    const escapedDesc = task.description ? escapeHtml(task.description) : '';
     return `
         <div class="kanban-card ${isOverdue(task) ? 'overdue' : ''}" data-task-id="${task.id}">
-            <div class="kanban-card-title">${task.text}</div>
-            ${task.description ? `<div class="kanban-card-desc">${task.description}</div>` : ''}
+            <div class="kanban-card-title">${escapedText}</div>
+            ${task.description ? `<div class="kanban-card-desc">${escapedDesc}</div>` : ''}
             ${task.dueDate ? `<div class="kanban-card-date">📅 ${new Date(task.dueDate).toLocaleDateString()}</div>` : ''}
             <div class="kanban-card-actions">
                 <button onclick="moveTask(${task.id}, 'left')">←</button>
