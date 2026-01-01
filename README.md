@@ -1,69 +1,115 @@
 # TooDoo
-The Ultimate To-Do List website
+The Ultimate To-Do List Web App
+
+## Tech Stack
+
+This is a modern React-based web application built with:
+
+- **React 19** - Component-driven UI development
+- **Vite** - Fast development server and build tool
+- **Zustand** - Lightweight state management
+- **TailwindCSS** - Utility-first CSS framework
+- **React Router** - Client-side routing
+- **ESLint & Prettier** - Code quality and formatting
 
 ## Features
 
-✨ **Interactive Task Management**
-- Add new tasks quickly with keyboard shortcuts (Enter key) or button click
-- Mark tasks as complete/incomplete with checkbox toggles
+✨ **Interactive Task Management** (Coming Soon)
+- Add new tasks quickly with keyboard shortcuts
+- Mark tasks as complete/incomplete
 - Delete individual tasks
-- Bulk delete all completed tasks
+- Organize tasks by priority and category
 
-📊 **Real-time Statistics**
-- Total task count
-- Completed task count
-- Pending task count
+📅 **Calendar View**
+- View tasks organized by date
+- Schedule tasks for specific days
 
-💾 **Persistent Storage**
-- All tasks are automatically saved to browser localStorage
-- Tasks persist across browser sessions and page refreshes
+🎯 **Focus Mode**
+- Concentrate on one task at a time
+- Minimize distractions
 
 🎨 **Modern UI**
 - Clean, responsive design that works on all devices
-- Beautiful gradient background
+- Beautiful gradient background with TailwindCSS
 - Smooth animations and transitions
-- Hover effects for better user experience
+
+## Project Structure
+
+```
+toodoo/
+├── src/
+│   ├── components/     # Reusable UI components
+│   │   ├── TaskList.jsx
+│   │   ├── TaskItem.jsx
+│   │   └── CalendarView.jsx
+│   ├── pages/          # Route-level components
+│   │   ├── Home.jsx
+│   │   ├── Calendar.jsx
+│   │   └── Focus.jsx
+│   ├── state/          # Zustand stores
+│   │   └── taskStore.js
+│   ├── services/       # API calls and backend interaction
+│   │   └── api.js
+│   ├── utils/          # Helper functions
+│   │   └── helpers.js
+│   ├── styles/         # Global styles
+│   │   └── index.css
+│   ├── App.jsx         # Main app component with routing
+│   └── main.jsx        # Application entry point
+├── public/             # Static assets
+├── index.html          # HTML template
+└── package.json        # Dependencies and scripts
+```
 
 ## Getting Started
 
-### Opening the Application
+### Prerequisites
 
-Simply open `index.html` in any modern web browser:
+- Node.js (v16 or higher)
+- npm (v7 or higher)
 
-1. **Directly**: Double-click the `index.html` file
-2. **Via HTTP Server**: For best results, serve the files using a local web server
+### Installation
 
-   Using Python:
+1. Clone the repository:
    ```bash
-   python3 -m http.server 8080
-   ```
-   Then open http://localhost:8080 in your browser.
-
-   Using Node.js:
-   ```bash
-   npx http-server -p 8080
+   git clone https://github.com/anonymousdil/toodoo.git
+   cd toodoo
    ```
 
-### Usage
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-1. **Add a Task**: Type your task in the input field and press Enter or click "Add Task"
-2. **Complete a Task**: Click the checkbox next to the task
-3. **Delete a Task**: Click the "Delete" button next to the task
-4. **Clear Completed Tasks**: Click "Clear Completed" to remove all finished tasks at once
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
 
-## Files
+4. Open your browser and navigate to `http://localhost:5173`
 
-- `index.html` - Main HTML structure
-- `style.css` - Styling and animations
-- `script.js` - Interactive functionality and localStorage management
+### Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
+- `npm run format` - Format code with Prettier
+
+## Development
+
+The app uses:
+- **Vite** for fast hot module replacement during development
+- **ESLint** for code quality checks
+- **Prettier** for consistent code formatting
+- **TailwindCSS** for styling with utility classes
 
 ## Browser Compatibility
 
 Works with all modern browsers that support:
-- HTML5
-- CSS3 (Grid, Flexbox, Animations)
-- ES6 JavaScript
-- localStorage API
+- ES6+ JavaScript
+- CSS3 (Grid, Flexbox)
+- React 19
 
 ## License
 
