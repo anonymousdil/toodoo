@@ -449,9 +449,10 @@ function renderCalendarView(filteredTasks) {
         
         tasksOnDay.forEach(task => {
             const escapedText = escapeHtml(task.text);
-            const displayText = task.text.length > 15 ? task.text.substring(0, 15) + '...' : task.text;
+            const truncatedText = task.text.length > 15 ? task.text.substring(0, 15) + '...' : task.text;
+            const escapedDisplayText = escapeHtml(truncatedText);
             html += `<div class="calendar-task ${task.completed ? 'completed' : ''}" title="${escapedText}">
-                ${escapeHtml(displayText)}
+                ${escapedDisplayText}
             </div>`;
         });
         
@@ -496,11 +497,22 @@ function renderKanbanView(filteredTasks) {
 function createKanbanCard(task) {
     const escapedText = escapeHtml(task.text);
     const escapedDesc = task.description ? escapeHtml(task.description) : '';
+    let dateDisplay = '';
+    if (task.dueDate) {
+        try {
+            const date = new Date(task.dueDate);
+            if (!isNaN(date.getTime())) {
+                dateDisplay = `<div class="kanban-card-date">📅 ${date.toLocaleDateString()}</div>`;
+            }
+        } catch (e) {
+            // Invalid date, skip display
+        }
+    }
     return `
         <div class="kanban-card ${isOverdue(task) ? 'overdue' : ''}" data-task-id="${task.id}">
             <div class="kanban-card-title">${escapedText}</div>
             ${task.description ? `<div class="kanban-card-desc">${escapedDesc}</div>` : ''}
-            ${task.dueDate ? `<div class="kanban-card-date">📅 ${new Date(task.dueDate).toLocaleDateString()}</div>` : ''}
+            ${dateDisplay}
             <div class="kanban-card-actions">
                 <button onclick="moveTask(${task.id}, 'left')">←</button>
                 <button onclick="moveTask(${task.id}, 'right')">→</button>
