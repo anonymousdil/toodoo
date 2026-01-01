@@ -1,21 +1,17 @@
-// DOM Elements
-const taskInput = document.getElementById('taskInput');
-const addBtn = document.getElementById('addBtn');
-const taskList = document.getElementById('taskList');
-const clearCompletedBtn = document.getElementById('clearCompleted');
-const totalTasksEl = document.getElementById('totalTasks');
-const completedTasksEl = document.getElementById('completedTasks');
-const pendingTasksEl = document.getElementById('pendingTasks');
+// DOM Elements - will be initialized after DOM loads
+let taskInput, taskList, clearCompletedBtn, totalTasksEl, completedTasksEl, pendingTasksEl;
 
 // Tasks array
 let tasks = [];
 
 // App state
+let currentPage = 'tasks';
 let currentList = 'all';
-let currentView = 'list'; // list, calendar, kanban
+let currentView = 'list'; // list, kanban
 let searchQuery = '';
 let filterStatus = 'all'; // all, active, completed, overdue
 let draggedTask = null;
+let editingTaskId = null;
 
 // Helper function to escape HTML
 function escapeHtml(text) {
@@ -26,64 +22,153 @@ function escapeHtml(text) {
 
 // Load tasks from localStorage on page load
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize DOM elements
+    taskInput = document.getElementById('taskInput');
+    taskList = document.getElementById('taskList');
+    clearCompletedBtn = document.getElementById('clearCompleted');
+    totalTasksEl = document.getElementById('totalTasks');
+    completedTasksEl = document.getElementById('completedTasks');
+    pendingTasksEl = document.getElementById('pendingTasks');
+    
     loadTasks();
     renderTasks();
     updateStats();
+    
+    // Clear completed button handler
+    if (clearCompletedBtn) {
+        clearCompletedBtn.addEventListener('click', clearCompleted);
+    }
     
     // Load theme and check for voodoo activation
     checkVoodooTheme();
 });
 
-// Add task on button click
-addBtn.addEventListener('click', addTask);
-
-// Add task on Enter key press
-taskInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        addTask();
+// Page Navigation
+function navigateToPage(pageName) {
+    currentPage = pageName;
+    
+    // Hide all pages
+    document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+    
+    // Show selected page
+    const selectedPage = document.getElementById(pageName + 'Page');
+    if (selectedPage) {
+        selectedPage.classList.add('active');
     }
-});
+    
+    // Update active nav button
+    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`[data-page="${pageName}"]`)?.classList.add('active');
+    
+    // Render content based on page
+    if (pageName === 'calendar') {
+        renderCalendarPage();
+    } else if (pageName === 'stats') {
+        updateStats();
+    } else if (pageName === 'tasks') {
+        renderTasks();
+    }
+}
 
-// Clear completed tasks
-clearCompletedBtn.addEventListener('click', clearCompleted);
+// Task Modal Functions
+function openTaskModal(taskId = null) {
+    const modal = document.getElementById('taskModal');
+    const modalTitle = document.getElementById('taskModalTitle');
+    const taskInputEl = document.getElementById('taskInput');
+    const taskDescEl = document.getElementById('taskDescription');
+    const taskDateEl = document.getElementById('taskDueDate');
+    const taskListEl = document.getElementById('taskList-select');
+    
+    if (!modal) return;
+    
+    editingTaskId = taskId;
+    
+    if (taskId) {
+        // Edit mode
+        const task = tasks.find(t => t.id === taskId);
+        if (task) {
+            modalTitle.textContent = 'Edit Task';
+            if (taskInputEl) taskInputEl.value = task.text;
+            if (taskDescEl) taskDescEl.value = task.description || '';
+            if (taskDateEl) taskDateEl.value = task.dueDate || '';
+            if (taskListEl) taskListEl.value = task.list || 'misc';
+        }
+    } else {
+        // Add mode
+        modalTitle.textContent = 'Add New Task';
+        if (taskInputEl) taskInputEl.value = '';
+        if (taskDescEl) taskDescEl.value = '';
+        if (taskDateEl) taskDateEl.value = '';
+        if (taskListEl) taskListEl.value = 'misc';
+    }
+    
+    modal.classList.add('active');
+}
 
-// Function to add a new task
-function addTask() {
-    const taskText = taskInput.value.trim();
+function closeTaskModal() {
+    const modal = document.getElementById('taskModal');
+    if (modal) {
+        modal.classList.remove('active');
+    }
+    editingTaskId = null;
+}
+
+function saveTask() {
+    const taskInputEl = document.getElementById('taskInput');
+    const taskDescEl = document.getElementById('taskDescription');
+    const taskDateEl = document.getElementById('taskDueDate');
+    const taskListEl = document.getElementById('taskList-select');
+    
+    const taskText = taskInputEl ? taskInputEl.value.trim() : '';
     
     if (taskText === '') {
         alert('Please enter a task!');
         return;
     }
     
-    const descriptionInput = document.getElementById('taskDescription');
-    const dueDateInput = document.getElementById('taskDueDate');
-    const listSelect = document.getElementById('taskList-select');
+    if (editingTaskId) {
+        // Update existing task
+        const task = tasks.find(t => t.id === editingTaskId);
+        if (task) {
+            const oldText = task.text;
+            task.text = taskText;
+            task.description = taskDescEl ? taskDescEl.value.trim() : '';
+            task.dueDate = taskDateEl ? taskDateEl.value : null;
+            task.list = taskListEl ? taskListEl.value : 'misc';
+            
+            // Check if voodoo theme should be activated or deactivated based on text change
+            if (oldText.toLowerCase() === 'toodoo voodoo' || task.text.toLowerCase() === 'toodoo voodoo') {
+                checkVoodooTheme();
+            }
+        }
+    } else {
+        // Add new task
+        const task = {
+            id: Date.now(),
+            text: taskText,
+            description: taskDescEl ? taskDescEl.value.trim() : '',
+            dueDate: taskDateEl ? taskDateEl.value : null,
+            completed: false,
+            list: taskListEl ? taskListEl.value : 'misc',
+            priority: 'medium',
+            createdAt: new Date().toISOString()
+        };
+        
+        tasks.push(task);
+        
+        // Check if voodoo theme should be activated
+        checkVoodooTheme();
+    }
     
-    const task = {
-        id: Date.now(),
-        text: taskText,
-        description: descriptionInput ? descriptionInput.value.trim() : '',
-        dueDate: dueDateInput ? dueDateInput.value : null,
-        completed: false,
-        list: listSelect ? listSelect.value : 'misc',
-        priority: 'medium',
-        createdAt: new Date().toISOString()
-    };
-    
-    tasks.push(task);
     saveTasks();
     renderTasks();
     updateStats();
-    
-    // Check if voodoo theme should be activated (handles "toodoo voodoo" task)
-    checkVoodooTheme();
-    
-    // Clear inputs and focus
-    taskInput.value = '';
-    if (descriptionInput) descriptionInput.value = '';
-    if (dueDateInput) dueDateInput.value = '';
-    taskInput.focus();
+    closeTaskModal();
+}
+
+// Function to add a new task (legacy support - now opens modal)
+function addTask() {
+    openTaskModal();
 }
 
 // Function to toggle task completion
@@ -321,51 +406,9 @@ function handleDragEnd(e) {
     this.classList.remove('dragging');
 }
 
-// Edit task function
+// Edit task function - now opens modal
 function editTask(id) {
-    const task = tasks.find(t => t.id === id);
-    if (!task) return;
-    
-    const oldText = task.text;
-    
-    const newText = prompt('Edit task:', task.text);
-    if (newText && newText.trim()) {
-        task.text = newText.trim();
-    }
-    
-    const newDesc = prompt('Edit description:', task.description || '');
-    if (newDesc !== null) {
-        task.description = newDesc.trim();
-    }
-    
-    const newDate = prompt('Edit due date (YYYY-MM-DD):', task.dueDate || '');
-    if (newDate !== null) {
-        // Validate date format
-        if (newDate.trim() === '') {
-            task.dueDate = null;
-        } else if (/^\d{4}-\d{2}-\d{2}$/.test(newDate)) {
-            const date = new Date(newDate);
-            // Check if date is valid
-            if (!isNaN(date.getTime())) {
-                task.dueDate = newDate;
-            } else {
-                alert('Invalid date. Please use format YYYY-MM-DD');
-                return;
-            }
-        } else {
-            alert('Invalid date format. Please use YYYY-MM-DD');
-            return;
-        }
-    }
-    
-    saveTasks();
-    renderTasks();
-    updateStats();
-    
-    // Check if voodoo theme should be activated or deactivated based on text change
-    if (oldText.toLowerCase() === 'toodoo voodoo' || task.text.toLowerCase() === 'toodoo voodoo') {
-        checkVoodooTheme();
-    }
+    openTaskModal(id);
 }
 
 // Function to update statistics
@@ -374,10 +417,14 @@ function updateStats() {
     const total = filteredTasks.length;
     const completed = filteredTasks.filter(t => t.completed).length;
     const pending = total - completed;
+    const overdue = filteredTasks.filter(t => isOverdue(t)).length;
     
-    totalTasksEl.textContent = `Total: ${total}`;
-    completedTasksEl.textContent = `Completed: ${completed}`;
-    pendingTasksEl.textContent = `Pending: ${pending}`;
+    if (totalTasksEl) totalTasksEl.textContent = total;
+    if (completedTasksEl) completedTasksEl.textContent = completed;
+    if (pendingTasksEl) pendingTasksEl.textContent = pending;
+    
+    const overdueTasksEl = document.getElementById('overdueTasks');
+    if (overdueTasksEl) overdueTasksEl.textContent = overdue;
     
     // Update progress bar
     const progressBar = document.getElementById('progress-bar');
@@ -393,7 +440,9 @@ function updateStats() {
     }
     
     // Disable clear completed button if no completed tasks
-    clearCompletedBtn.disabled = completed === 0;
+    if (clearCompletedBtn) {
+        clearCompletedBtn.disabled = completed === 0;
+    }
 }
 
 // Function to save tasks to localStorage
@@ -418,11 +467,25 @@ function loadTasks() {
     }
 }
 
-// Calendar View
+// Calendar View (for tasks page list view)
 function renderCalendarView(filteredTasks) {
+    if (!taskList) return;
     taskList.innerHTML = '<div id="calendar-container" class="calendar-view"></div>';
     const container = document.getElementById('calendar-container');
-    
+    renderCalendarInContainer(container, filteredTasks);
+}
+
+// Calendar Page rendering
+function renderCalendarPage() {
+    const container = document.getElementById('calendarContainer');
+    if (!container) return;
+    const filteredTasks = getFilteredTasks();
+    renderCalendarInContainer(container, filteredTasks);
+}
+
+// Shared calendar rendering logic
+function renderCalendarInContainer(container, filteredTasks) {
+    if (!container) return;
     const now = new Date();
     const year = now.getFullYear();
     const month = now.getMonth();
@@ -682,6 +745,71 @@ function handleFilter(status) {
     document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelector(`[data-filter="${status}"]`)?.classList.add('active');
     renderTasks();
+}
+
+// Settings Functions
+function setTheme(theme) {
+    document.body.setAttribute('data-theme', theme);
+    localStorage.setItem('toodoo-theme', theme);
+}
+
+function exportTasks() {
+    const dataStr = JSON.stringify(tasks, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `toodoo-tasks-${new Date().toISOString().split('T')[0]}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+}
+
+function importTasks() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'application/json';
+    input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const importedTasks = JSON.parse(event.target.result);
+                    if (Array.isArray(importedTasks)) {
+                        if (confirm(`Import ${importedTasks.length} tasks? This will replace your current tasks.`)) {
+                            tasks = importedTasks;
+                            saveTasks();
+                            renderTasks();
+                            updateStats();
+                            checkVoodooTheme();
+                            alert('Tasks imported successfully!');
+                        }
+                    } else {
+                        alert('Invalid file format!');
+                    }
+                } catch (error) {
+                    alert('Error importing tasks: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+    };
+    input.click();
+}
+
+function clearAllData() {
+    if (confirm('Are you sure you want to clear all tasks and settings? This cannot be undone!')) {
+        if (confirm('Really clear everything? This is your last chance!')) {
+            tasks = [];
+            activeTimezones = ['UTC'];
+            saveTasks();
+            saveTimezones();
+            renderTasks();
+            renderClocks();
+            updateStats();
+            alert('All data cleared!');
+        }
+    }
 }
 
 // Digital Clock Implementation

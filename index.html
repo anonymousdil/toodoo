@@ -16,30 +16,220 @@
             <p class="subtitle">The Ultimate To-Do List</p>
         </header>
 
-        <!-- List Tabs -->
-        <div class="list-tabs">
-            <button class="list-tab active" data-list="all" onclick="switchList('all')">All</button>
-            <button class="list-tab" data-list="college" onclick="switchList('college')">College</button>
-            <button class="list-tab" data-list="study" onclick="switchList('study')">Study</button>
-            <button class="list-tab" data-list="career" onclick="switchList('career')">Career</button>
-            <button class="list-tab" data-list="music" onclick="switchList('music')">Music</button>
-            <button class="list-tab" data-list="misc" onclick="switchList('misc')">Misc</button>
+        <!-- Main Navigation -->
+        <nav class="main-nav">
+            <button class="nav-btn active" data-page="tasks" onclick="navigateToPage('tasks')">📋 Tasks</button>
+            <button class="nav-btn" data-page="calendar" onclick="navigateToPage('calendar')">📅 Calendar</button>
+            <button class="nav-btn" data-page="clock" onclick="navigateToPage('clock')">🌍 World Clock</button>
+            <button class="nav-btn" data-page="stats" onclick="navigateToPage('stats')">📊 Stats</button>
+            <button class="nav-btn" data-page="settings" onclick="navigateToPage('settings')">⚙️ Settings</button>
+        </nav>
+
+        <!-- Tasks Page -->
+        <div id="tasksPage" class="page active">
+            <!-- List Tabs -->
+            <div class="list-tabs">
+                <button class="list-tab active" data-list="all" onclick="switchList('all')">All</button>
+                <button class="list-tab" data-list="college" onclick="switchList('college')">College</button>
+                <button class="list-tab" data-list="study" onclick="switchList('study')">Study</button>
+                <button class="list-tab" data-list="career" onclick="switchList('career')">Career</button>
+                <button class="list-tab" data-list="music" onclick="switchList('music')">Music</button>
+                <button class="list-tab" data-list="misc" onclick="switchList('misc')">Misc</button>
+            </div>
+
+            <!-- View Mode Switcher -->
+            <div class="view-switcher">
+                <button class="view-btn active" data-view="list" onclick="switchView('list')">📋 List</button>
+                <button class="view-btn" data-view="kanban" onclick="switchView('kanban')">📊 Kanban</button>
+            </div>
+
+                <!-- Search and Filter -->
+            <div class="search-filter-section">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="Search tasks..." 
+                    oninput="handleSearch(this.value)"
+                    autocomplete="off"
+                >
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all" onclick="handleFilter('all')">All</button>
+                    <button class="filter-btn" data-filter="active" onclick="handleFilter('active')">Active</button>
+                    <button class="filter-btn" data-filter="completed" onclick="handleFilter('completed')">Completed</button>
+                    <button class="filter-btn" data-filter="overdue" onclick="handleFilter('overdue')">Overdue</button>
+                </div>
+            </div>
+
+            <!-- Add Task Button -->
+            <div class="action-section">
+                <button id="addTaskBtn" class="primary-btn" onclick="openTaskModal()">+ Add New Task</button>
+            </div>
+
+            <ul id="taskList" class="task-list"></ul>
+
+            <div class="footer">
+                <button id="clearCompleted" class="clear-btn">Clear Completed</button>
+            </div>
         </div>
 
-        <!-- View Mode Switcher -->
-        <div class="view-switcher">
-            <button class="view-btn active" data-view="list" onclick="switchView('list')">📋 List</button>
-            <button class="view-btn" data-view="calendar" onclick="switchView('calendar')">📅 Calendar</button>
-            <button class="view-btn" data-view="kanban" onclick="switchView('kanban')">📊 Kanban</button>
+        <!-- Calendar Page -->
+        <div id="calendarPage" class="page">
+            <div class="page-header">
+                <h2>Calendar View</h2>
+            </div>
+            <div id="calendarContainer" class="calendar-container"></div>
         </div>
 
-        <!-- Digital Clock Section -->
-        <div class="digital-clock-section">
-            <div class="clock-header">
-                <h3>🌍 World Clock</h3>
+        <!-- World Clock Page -->
+        <div id="clockPage" class="page">
+            <div class="page-header">
+                <h2>🌍 World Clock</h2>
                 <button class="clock-add-btn" onclick="openTimezoneModal()">+ Add Time Zone</button>
             </div>
             <div id="clockDisplay" class="clock-display"></div>
+        </div>
+
+        <!-- Stats Page -->
+        <div id="statsPage" class="page">
+            <div class="page-header">
+                <h2>Statistics</h2>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="stats-card">
+                <h3>Overall Progress</h3>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progress-bar">0%</div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📝</div>
+                    <div class="stat-value" id="totalTasks">0</div>
+                    <div class="stat-label">Total Tasks</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-value" id="completedTasks">0</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⏳</div>
+                    <div class="stat-value" id="pendingTasks">0</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🔥</div>
+                    <div class="stat-value" id="overdueTasks">0</div>
+                    <div class="stat-label">Overdue</div>
+                </div>
+            </div>
+
+            <!-- Pomodoro Timer -->
+            <div class="stats-card">
+                <h3>Pomodoro Timer</h3>
+                <div class="pomodoro-section">
+                    <div class="pomodoro-timer" id="pomodoro-timer">25:00</div>
+                    <div class="pomodoro-controls">
+                        <button onclick="startPomodoro()" class="pomodoro-btn">▶ Start</button>
+                        <button onclick="pausePomodoro()" class="pomodoro-btn">⏸ Pause</button>
+                        <button onclick="resetPomodoro()" class="pomodoro-btn">↻ Reset</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Page -->
+        <div id="settingsPage" class="page">
+            <div class="page-header">
+                <h2>Settings</h2>
+            </div>
+
+            <div class="settings-section">
+                <h3>Appearance</h3>
+                <div class="setting-item">
+                    <label>Theme</label>
+                    <div class="theme-options">
+                        <button class="theme-btn" onclick="setTheme('light')">☀️ Light</button>
+                        <button class="theme-btn" onclick="setTheme('dark')">🌙 Dark</button>
+                        <button class="theme-btn" onclick="setTheme('voodoo')">🎨 Voodoo</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3>Data Management</h3>
+                <div class="setting-item">
+                    <label>Export/Import Tasks</label>
+                    <div class="data-actions">
+                        <button class="setting-btn" onclick="exportTasks()">📥 Export Tasks</button>
+                        <button class="setting-btn" onclick="importTasks()">📤 Import Tasks</button>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <label>Clear All Data</label>
+                    <button class="danger-btn" onclick="clearAllData()">🗑️ Clear All Data</button>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3>About</h3>
+                <p>TooDoo - The Ultimate To-Do List</p>
+                <p>Version 2.0 with World Clock</p>
+            </div>
+        </div>
+
+        <!-- Task Modal -->
+        <div id="taskModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="taskModalTitle">Add New Task</h3>
+                    <button class="modal-close" onclick="closeTaskModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Task Title *</label>
+                        <input 
+                            type="text" 
+                            id="taskInput" 
+                            placeholder="What needs to be done?" 
+                            autocomplete="off"
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label>Description (optional)</label>
+                        <textarea 
+                            id="taskDescription" 
+                            placeholder="Add description"
+                            rows="3"
+                        ></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Due Date</label>
+                            <input 
+                                type="date" 
+                                id="taskDueDate"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label>List</label>
+                            <select id="taskList-select">
+                                <option value="misc">Misc</option>
+                                <option value="college">College</option>
+                                <option value="study">Study</option>
+                                <option value="career">Career</option>
+                                <option value="music">Music</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="modal-btn secondary" onclick="closeTaskModal()">Cancel</button>
+                        <button class="modal-btn primary" id="saveTaskBtn" onclick="saveTask()">Save Task</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Timezone Modal -->
@@ -50,100 +240,31 @@
                     <button class="modal-close" onclick="closeTimezoneModal()">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <select id="timezoneSelect" class="timezone-select">
-                        <option value="UTC">UTC - Coordinated Universal Time</option>
-                        <option value="America/New_York">EST - Eastern Time (New York)</option>
-                        <option value="America/Chicago">CST - Central Time (Chicago)</option>
-                        <option value="America/Denver">MST - Mountain Time (Denver)</option>
-                        <option value="America/Los_Angeles">PST - Pacific Time (Los Angeles)</option>
-                        <option value="Europe/London">GMT - Greenwich Mean Time (London)</option>
-                        <option value="Europe/Paris">CET - Central European Time (Paris)</option>
-                        <option value="Europe/Moscow">MSK - Moscow Time</option>
-                        <option value="Asia/Dubai">GST - Gulf Standard Time (Dubai)</option>
-                        <option value="Asia/Kolkata">IST - Indian Standard Time</option>
-                        <option value="Asia/Shanghai">CST - China Standard Time (Shanghai)</option>
-                        <option value="Asia/Tokyo">JST - Japan Standard Time (Tokyo)</option>
-                        <option value="Australia/Sydney">AEDT - Australian Eastern Time (Sydney)</option>
-                        <option value="Pacific/Auckland">NZDT - New Zealand Time (Auckland)</option>
-                    </select>
-                    <button class="modal-btn" onclick="addTimezone()">Add</button>
+                    <div class="form-group">
+                        <label>Select Time Zone</label>
+                        <select id="timezoneSelect" class="timezone-select">
+                            <option value="UTC">UTC - Coordinated Universal Time</option>
+                            <option value="America/New_York">EST - Eastern Time (New York)</option>
+                            <option value="America/Chicago">CST - Central Time (Chicago)</option>
+                            <option value="America/Denver">MST - Mountain Time (Denver)</option>
+                            <option value="America/Los_Angeles">PST - Pacific Time (Los Angeles)</option>
+                            <option value="Europe/London">GMT - Greenwich Mean Time (London)</option>
+                            <option value="Europe/Paris">CET - Central European Time (Paris)</option>
+                            <option value="Europe/Moscow">MSK - Moscow Time</option>
+                            <option value="Asia/Dubai">GST - Gulf Standard Time (Dubai)</option>
+                            <option value="Asia/Kolkata">IST - Indian Standard Time</option>
+                            <option value="Asia/Shanghai">CST - China Standard Time (Shanghai)</option>
+                            <option value="Asia/Tokyo">JST - Japan Standard Time (Tokyo)</option>
+                            <option value="Australia/Sydney">AEDT - Australian Eastern Time (Sydney)</option>
+                            <option value="Pacific/Auckland">NZDT - New Zealand Time (Auckland)</option>
+                        </select>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="modal-btn secondary" onclick="closeTimezoneModal()">Cancel</button>
+                        <button class="modal-btn primary" onclick="addTimezone()">Add Time Zone</button>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Search and Filter -->
-        <div class="search-filter-section">
-            <input 
-                type="text" 
-                id="searchInput" 
-                placeholder="Search tasks..." 
-                oninput="handleSearch(this.value)"
-                autocomplete="off"
-            >
-            <div class="filter-buttons">
-                <button class="filter-btn active" data-filter="all" onclick="handleFilter('all')">All</button>
-                <button class="filter-btn" data-filter="active" onclick="handleFilter('active')">Active</button>
-                <button class="filter-btn" data-filter="completed" onclick="handleFilter('completed')">Completed</button>
-                <button class="filter-btn" data-filter="overdue" onclick="handleFilter('overdue')">Overdue</button>
-            </div>
-        </div>
-
-        <!-- Pomodoro Timer -->
-        <div class="pomodoro-section">
-            <div class="pomodoro-timer" id="pomodoro-timer">25:00</div>
-            <div class="pomodoro-controls">
-                <button onclick="startPomodoro()" class="pomodoro-btn">▶ Start</button>
-                <button onclick="pausePomodoro()" class="pomodoro-btn">⏸ Pause</button>
-                <button onclick="resetPomodoro()" class="pomodoro-btn">↻ Reset</button>
-            </div>
-        </div>
-
-        <div class="input-section">
-            <div class="input-group">
-                <input 
-                    type="text" 
-                    id="taskInput" 
-                    placeholder="What needs to be done?" 
-                    autocomplete="off"
-                >
-                <textarea 
-                    id="taskDescription" 
-                    placeholder="Add description (optional)"
-                    rows="2"
-                ></textarea>
-                <div class="task-options">
-                    <input 
-                        type="date" 
-                        id="taskDueDate"
-                        title="Due date (optional)"
-                    >
-                    <select id="taskList-select">
-                        <option value="misc">Misc</option>
-                        <option value="college">College</option>
-                        <option value="study">Study</option>
-                        <option value="career">Career</option>
-                        <option value="music">Music</option>
-                    </select>
-                </div>
-            </div>
-            <button id="addBtn">Add Task</button>
-        </div>
-
-        <!-- Progress Bar -->
-        <div class="progress-container">
-            <div class="progress-bar" id="progress-bar">0%</div>
-        </div>
-
-        <div class="stats">
-            <span id="totalTasks">Total: 0</span>
-            <span id="completedTasks">Completed: 0</span>
-            <span id="pendingTasks">Pending: 0</span>
-        </div>
-
-        <ul id="taskList" class="task-list"></ul>
-
-        <div class="footer">
-            <button id="clearCompleted" class="clear-btn">Clear Completed</button>
         </div>
     </div>
 

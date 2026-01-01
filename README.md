@@ -3,6 +3,20 @@ The Ultimate To-Do List website
 
 ## Features
 
+### 🌍 World Clock (NEW!)
+- **Multiple Time Zones**: Display current time in multiple time zones simultaneously
+- **Real-time Updates**: Clocks update every second automatically
+- **Add/Remove Zones**: Easily add or remove time zones with a dropdown selector
+- **14 Time Zones**: Includes UTC, EST, PST, GMT, IST, JST, and more
+- **Clean Display**: Shows time in HH:MM:SS format with full date information
+- **Persistent Storage**: Selected time zones are saved to localStorage
+
+### 📱 Multi-Page Navigation (NEW!)
+- **Separate Pages**: Organized into Tasks, Calendar, World Clock, Stats, and Settings pages
+- **Clean UI**: Each feature has its own dedicated page for better focus
+- **Easy Navigation**: Top navigation bar for quick access to all sections
+- **Modal-based Forms**: Task creation and editing now use clean modal dialogs
+
 ### ✨ Core Task Management
 - **Add Tasks**: Quickly add new tasks with keyboard shortcuts (Enter key) or button click
 - **Task Completion**: Mark tasks as complete/incomplete with checkbox toggles
@@ -41,7 +55,8 @@ Organize tasks into different categories:
   - **Completed**: Show only completed tasks
   - **Overdue**: Show only overdue tasks
 
-### 📅 Calendar View
+### 📅 Calendar Page (NEW!)
+- Dedicated calendar page in main navigation
 - Visual calendar showing tasks by their due dates
 - Current day highlighted
 - Click dates to see tasks scheduled for that day
@@ -53,6 +68,18 @@ Organize tasks into different categories:
 - Visual task management inspired by agile methodologies
 - Great for workflow visualization
 
+### 📊 Statistics Page (NEW!)
+- Dedicated stats page showing overview of all tasks
+- **Visual Cards**: Total, Completed, Pending, and Overdue task counts
+- **Progress Bar**: Visual representation of completion percentage
+- **Pomodoro Timer**: Integrated 25-minute focus timer on stats page
+
+### ⚙️ Settings Page (NEW!)
+- **Theme Switcher**: Choose between Light, Dark, and Voodoo themes
+- **Export/Import**: Backup and restore tasks as JSON files
+- **Clear Data**: Option to reset all data
+- **About Section**: App version and information
+
 ### ⏱️ Pomodoro Timer
 - Built-in 25-minute Pomodoro timer
 - Start, pause, and reset controls
@@ -60,7 +87,7 @@ Organize tasks into different categories:
 - Helps maintain focus on tasks
 
 ### 📈 Progress Bars
-- **Overall Progress**: Visual bar showing completion percentage
+- **Overall Progress**: Visual bar showing completion percentage on Stats page
 - Updates in real-time as tasks are completed
 - Percentage display on progress bar
 - Motivates task completion
@@ -85,22 +112,28 @@ Organize tasks into different categories:
 - Reduces eye strain in low-light environments
 
 ### 📊 Real-time Statistics
-- Total task count
+- Total task count with visual cards
 - Completed task count
 - Pending task count
+- Overdue task count (NEW!)
 - Updates automatically with every change
+- Dedicated Statistics page for better overview
 
 ### 💾 Persistent Storage
 - All tasks saved automatically to browser localStorage
+- Time zone preferences saved
 - Tasks persist across browser sessions
 - Theme preference saved
 - No data loss on page refresh
+- Export/import functionality for backup
 
 ### 🎨 Minimalist UI
 - Clean, responsive design that works on all devices
 - Modern black and white theme (with dark mode)
 - Intuitive and distraction-free interface
 - Mobile-friendly responsive layout
+- **Multi-page navigation** for organized workflow
+- **Modal dialogs** for task creation and editing
 
 ## Getting Started
 
@@ -124,44 +157,71 @@ Simply open `index.html` in any modern web browser:
 
 ### Usage Guide
 
+#### Navigation
+- Use the **main navigation bar** at the top to switch between pages:
+  - **📋 Tasks**: Manage your to-do list
+  - **📅 Calendar**: View tasks in calendar format
+  - **🌍 World Clock**: Track time across multiple time zones
+  - **📊 Stats**: View statistics and use the Pomodoro timer
+  - **⚙️ Settings**: Customize appearance and manage data
+
 #### Adding Tasks
-1. Type your task title in the main input field
-2. (Optional) Add a detailed description in the description field
-3. (Optional) Select a due date from the date picker
-4. (Optional) Choose a list category from the dropdown
-5. Press Enter or click "Add Task"
+1. Click the **"+ Add New Task"** button on the Tasks page
+2. Fill in the task details in the modal:
+   - Task title (required)
+   - Description (optional)
+   - Due date (optional)
+   - List category
+3. Click **"Save Task"** to add the task
 
 #### Managing Tasks
 - **Complete a Task**: Click the checkbox next to the task
-- **Edit a Task**: Click the "Edit" button to modify title, description, or due date
+- **Edit a Task**: Click the "Edit" button to open the edit modal
 - **Delete a Task**: Click the "Delete" button to remove a task
 - **Reorder Tasks**: Drag and drop tasks to reorder them
 - **Move Tasks** (Kanban): Use arrow buttons to move tasks between workflow stages
 
+#### Using the World Clock
+1. Navigate to the **🌍 World Clock** page
+2. Click **"+ Add Time Zone"** to open the modal
+3. Select a time zone from the dropdown (14 options available)
+4. Click **"Add Time Zone"** to add it to your display
+5. Remove time zones by clicking the **×** button on each clock
+6. All clocks update in real-time every second
+
 #### Organizing Tasks
-- **Switch Lists**: Click list tabs at the top to filter by category
+- **Switch Lists**: Click list tabs on the Tasks page to filter by category
 - **Search**: Type in the search box to find specific tasks
 - **Filter**: Use filter buttons to show all, active, completed, or overdue tasks
-- **Change View**: Switch between List, Calendar, and Kanban views
+- **Change View**: Switch between List and Kanban views on the Tasks page
 
 #### Using the Pomodoro Timer
-1. Click "▶ Start" to begin a 25-minute focus session
-2. Click "⏸ Pause" to pause the timer
-3. Click "↻ Reset" to reset the timer to 25:00
-4. An alert will notify you when the session completes
+1. Navigate to the **📊 Stats** page
+2. Click **"▶ Start"** to begin a 25-minute focus session
+3. Click **"⏸ Pause"** to pause the timer
+4. Click **"↻ Reset"** to reset the timer to 25:00
+5. An alert will notify you when the session completes
 
 #### Switching Themes
-- Click the 🌓 button in the top-right corner to toggle between light and dark modes
+1. Navigate to the **⚙️ Settings** page
+2. Click on **☀️ Light**, **🌙 Dark**, or **🎨 Voodoo** to change themes
+3. Theme preference is automatically saved
+
+#### Managing Data
+- **Export Tasks**: Download your tasks as a JSON file for backup
+- **Import Tasks**: Upload a previously exported JSON file to restore tasks
+- **Clear All Data**: Reset the app to its initial state (requires confirmation)
 
 #### Clearing Completed Tasks
-- Click "Clear Completed" at the bottom to remove all finished tasks
+- Go to the **Tasks** page
+- Click **"Clear Completed"** at the bottom to remove all finished tasks
 - Requires confirmation before deletion
 
 ## Files
 
-- `index.html` - Main HTML structure with all UI components
-- `style.css` - Comprehensive styling with dark/light mode support
-- `script.js` - Interactive functionality, view management, and localStorage handling
+- `index.html` - Main HTML structure with multi-page layout and modal components
+- `style.css` - Comprehensive styling with dark/light mode support and responsive design
+- `script.js` - Interactive functionality, page navigation, modals, world clock, and localStorage handling
 
 ## Browser Compatibility
 
@@ -171,6 +231,7 @@ Works with all modern browsers that support:
 - ES6 JavaScript
 - localStorage API
 - CSS Custom Properties (for theming)
+- Intl.DateTimeFormat API (for world clock time zones)
 
 Tested on:
 - Chrome/Edge (latest)
@@ -182,47 +243,56 @@ Tested on:
 
 | Feature | Description | Status |
 |---------|-------------|--------|
+| World Clock | Multiple time zones with real-time updates | ✅ Implemented |
+| Multi-Page Layout | Separate pages for Tasks, Calendar, Stats, Settings | ✅ Implemented |
+| Modal Dialogs | Task creation/editing in modals | ✅ Implemented |
 | Due Dates | Optional date picker for tasks | ✅ Implemented |
 | Task Descriptions | Add detailed context to tasks | ✅ Implemented |
 | Overdue Detection | Automatic highlighting of overdue tasks | ✅ Implemented |
 | Multiple Lists | 6 categories: college, study, career, music, misc, all | ✅ Implemented |
 | Drag-and-Drop | Reorder tasks with drag and drop | ✅ Implemented |
 | Search & Filters | Search by text and filter by status | ✅ Implemented |
-| Calendar View | Monthly calendar with task visualization | ✅ Implemented |
+| Calendar Page | Dedicated calendar page with task visualization | ✅ Implemented |
 | Kanban View | Three-column workflow board | ✅ Implemented |
-| Pomodoro Timer | 25-minute focus timer | ✅ Implemented |
+| Pomodoro Timer | 25-minute focus timer on Stats page | ✅ Implemented |
 | Progress Bars | Visual completion indicators | ✅ Implemented |
 | Smooth Animations | Enhanced transitions and effects | ✅ Implemented |
 | Hover Animations | Interactive hover effects | ✅ Implemented |
 | Dark/Light Mode | Theme toggle with persistence | ✅ Implemented |
+| Export/Import | Backup and restore tasks | ✅ Implemented |
 
 ## Keyboard Shortcuts
 
-- **Enter**: Add task (when in task input field)
-- **Tab**: Navigate between input fields
+- **Tab**: Navigate between input fields in modals
+- **Escape**: Close open modals (when implemented)
 - **Click & Drag**: Reorder tasks in list view
 
 ## Tips for Best Experience
 
-1. **Use Due Dates** for time-sensitive tasks to leverage overdue detection
-2. **Add Descriptions** to complex tasks for better context
-3. **Organize with Lists** to keep different areas of life separate
-4. **Try Kanban View** for workflow management and visual progress tracking
-5. **Use Pomodoro Timer** when focusing on a specific task
-6. **Enable Dark Mode** for comfortable nighttime use
-7. **Search Regularly** to quickly find specific tasks
-8. **Use Calendar View** to plan your week ahead
+1. **Explore All Pages** using the main navigation to discover all features
+2. **Use World Clock** to track time across different time zones for remote work
+3. **Use Due Dates** for time-sensitive tasks to leverage overdue detection
+4. **Add Descriptions** to complex tasks for better context
+5. **Organize with Lists** to keep different areas of life separate
+6. **Try Kanban View** for workflow management and visual progress tracking
+7. **Check Stats Page** to monitor your productivity and use the Pomodoro timer
+8. **Enable Dark Mode** in Settings for comfortable nighttime use
+9. **Search Regularly** to quickly find specific tasks
+10. **Use Calendar Page** to plan your week ahead
+11. **Export Your Data** regularly from Settings to create backups
 
 ## Local Storage
 
-All data is stored in your browser's localStorage under the key `toodoo-tasks`. To backup your tasks:
+All data is stored in your browser's localStorage:
+- **Tasks**: Stored under the key `toodoo-tasks`
+- **Time Zones**: Stored under the key `toodoo-timezones`
+- **Theme**: Stored under the key `toodoo-theme`
 
-1. Open browser Developer Tools (F12)
-2. Go to Application/Storage → Local Storage
-3. Find the `toodoo-tasks` key
-4. Copy the value to save your tasks
+To backup your data:
+1. Use the **Export** feature in Settings page (recommended)
+2. Or manually copy from browser Developer Tools (F12) → Application/Storage → Local Storage
 
-To restore tasks, paste the saved value back into localStorage.
+To restore data, use the **Import** feature in Settings or paste the saved value back into localStorage.
 
 ## Privacy
 
@@ -234,3 +304,21 @@ To restore tasks, paste the saved value back into localStorage.
 ## License
 
 This project is open source and available for personal and educational use.
+
+---
+
+## Version History
+
+### Version 2.0 (Current)
+- ✨ Added **World Clock** feature with multiple time zone support
+- 🎨 Restructured UI with **multi-page navigation** (Tasks, Calendar, World Clock, Stats, Settings)
+- 📝 Implemented **modal dialogs** for task creation and editing
+- 📊 Created dedicated **Statistics page** with visual cards
+- ⚙️ Added **Settings page** with theme switcher and data management
+- 💾 Implemented **Export/Import** functionality for task backup
+- 🔥 Added **Overdue task counter** to statistics
+- 🌍 Real-time clock updates for all time zones
+- 📱 Improved responsive design for mobile devices
+
+### Version 1.0
+- Initial release with task management, calendar view, Kanban board, and Pomodoro timer
