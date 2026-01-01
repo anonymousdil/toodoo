@@ -18,11 +18,11 @@ The Ultimate To-Do List website
 - All tasks are automatically saved to browser localStorage
 - Tasks persist across browser sessions and page refreshes
 
-🎨 **Modern UI**
+🎨 **Minimalist UI**
 - Clean, responsive design that works on all devices
-- Beautiful gradient background
+- Black and white minimalist theme
 - Smooth animations and transitions
-- Hover effects for better user experience
+- Intuitive and distraction-free interface
 
 ## Getting Started
 
