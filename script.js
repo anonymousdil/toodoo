@@ -683,3 +683,179 @@ function handleFilter(status) {
     document.querySelector(`[data-filter="${status}"]`)?.classList.add('active');
     renderTasks();
 }
+
+// Digital Clock Implementation
+let activeTimezones = [];
+let clockInterval = null;
+
+// Timezone data with display names
+const timezoneData = {
+    'UTC': 'UTC',
+    'America/New_York': 'New York',
+    'America/Chicago': 'Chicago',
+    'America/Denver': 'Denver',
+    'America/Los_Angeles': 'Los Angeles',
+    'Europe/London': 'London',
+    'Europe/Paris': 'Paris',
+    'Europe/Moscow': 'Moscow',
+    'Asia/Dubai': 'Dubai',
+    'Asia/Kolkata': 'India',
+    'Asia/Shanghai': 'Shanghai',
+    'Asia/Tokyo': 'Tokyo',
+    'Australia/Sydney': 'Sydney',
+    'Pacific/Auckland': 'Auckland'
+};
+
+// Initialize clock on page load
+document.addEventListener('DOMContentLoaded', () => {
+    loadTimezones();
+    renderClocks();
+    startClockUpdates();
+});
+
+// Load timezones from localStorage
+function loadTimezones() {
+    const saved = localStorage.getItem('toodoo-timezones');
+    if (saved) {
+        activeTimezones = JSON.parse(saved);
+    } else {
+        // Default to UTC
+        activeTimezones = ['UTC'];
+    }
+}
+
+// Save timezones to localStorage
+function saveTimezones() {
+    localStorage.setItem('toodoo-timezones', JSON.stringify(activeTimezones));
+}
+
+// Open timezone modal
+function openTimezoneModal() {
+    const modal = document.getElementById('timezoneModal');
+    if (modal) {
+        modal.classList.add('active');
+    }
+}
+
+// Close timezone modal
+function closeTimezoneModal() {
+    const modal = document.getElementById('timezoneModal');
+    if (modal) {
+        modal.classList.remove('active');
+    }
+}
+
+// Add timezone
+function addTimezone() {
+    const select = document.getElementById('timezoneSelect');
+    if (!select) return;
+    
+    const timezone = select.value;
+    
+    if (!activeTimezones.includes(timezone)) {
+        activeTimezones.push(timezone);
+        saveTimezones();
+        renderClocks();
+    }
+    
+    closeTimezoneModal();
+}
+
+// Remove timezone
+function removeTimezone(timezone) {
+    if (activeTimezones.length === 1) {
+        alert('You must have at least one timezone!');
+        return;
+    }
+    
+    activeTimezones = activeTimezones.filter(tz => tz !== timezone);
+    saveTimezones();
+    renderClocks();
+}
+
+// Get formatted time for a timezone
+function getTimeForTimezone(timezone) {
+    try {
+        const now = new Date();
+        
+        // Format time
+        const timeOptions = {
+            timeZone: timezone,
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        };
+        const time = new Intl.DateTimeFormat('en-US', timeOptions).format(now);
+        
+        // Format date
+        const dateOptions = {
+            timeZone: timezone,
+            weekday: 'short',
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        };
+        const date = new Intl.DateTimeFormat('en-US', dateOptions).format(now);
+        
+        return { time, date };
+    } catch (e) {
+        console.error(`Error formatting time for ${timezone}:`, e);
+        return { time: '--:--:--', date: 'Invalid timezone' };
+    }
+}
+
+// Render all clocks
+function renderClocks() {
+    const clockDisplay = document.getElementById('clockDisplay');
+    if (!clockDisplay) return;
+    
+    if (activeTimezones.length === 0) {
+        clockDisplay.innerHTML = `
+            <div class="clock-empty-state">
+                <p>No time zones added</p>
+                <p style="font-size: 0.9rem;">Click "+ Add Time Zone" to get started</p>
+            </div>
+        `;
+        return;
+    }
+    
+    clockDisplay.innerHTML = '';
+    
+    activeTimezones.forEach(timezone => {
+        const { time, date } = getTimeForTimezone(timezone);
+        const displayName = timezoneData[timezone] || timezone;
+        
+        const clockZone = document.createElement('div');
+        clockZone.className = 'clock-zone';
+        clockZone.innerHTML = `
+            <div class="clock-zone-header">
+                <div class="clock-zone-name">${escapeHtml(displayName)}</div>
+                <button class="clock-remove-btn" onclick="removeTimezone('${timezone}')" title="Remove">×</button>
+            </div>
+            <div class="clock-time">${escapeHtml(time)}</div>
+            <div class="clock-date">${escapeHtml(date)}</div>
+        `;
+        
+        clockDisplay.appendChild(clockZone);
+    });
+}
+
+// Start updating clocks every second
+function startClockUpdates() {
+    // Update immediately
+    renderClocks();
+    
+    // Then update every second
+    clockInterval = setInterval(() => {
+        renderClocks();
+    }, 1000);
+}
+
+// Close modal when clicking outside
+window.addEventListener('click', (event) => {
+    const modal = document.getElementById('timezoneModal');
+    if (event.target === modal) {
+        closeTimezoneModal();
+    }
+});

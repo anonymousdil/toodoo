@@ -33,6 +33,44 @@
             <button class="view-btn" data-view="kanban" onclick="switchView('kanban')">📊 Kanban</button>
         </div>
 
+        <!-- Digital Clock Section -->
+        <div class="digital-clock-section">
+            <div class="clock-header">
+                <h3>🌍 World Clock</h3>
+                <button class="clock-add-btn" onclick="openTimezoneModal()">+ Add Time Zone</button>
+            </div>
+            <div id="clockDisplay" class="clock-display"></div>
+        </div>
+
+        <!-- Timezone Modal -->
+        <div id="timezoneModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Add Time Zone</h3>
+                    <button class="modal-close" onclick="closeTimezoneModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <select id="timezoneSelect" class="timezone-select">
+                        <option value="UTC">UTC - Coordinated Universal Time</option>
+                        <option value="America/New_York">EST - Eastern Time (New York)</option>
+                        <option value="America/Chicago">CST - Central Time (Chicago)</option>
+                        <option value="America/Denver">MST - Mountain Time (Denver)</option>
+                        <option value="America/Los_Angeles">PST - Pacific Time (Los Angeles)</option>
+                        <option value="Europe/London">GMT - Greenwich Mean Time (London)</option>
+                        <option value="Europe/Paris">CET - Central European Time (Paris)</option>
+                        <option value="Europe/Moscow">MSK - Moscow Time</option>
+                        <option value="Asia/Dubai">GST - Gulf Standard Time (Dubai)</option>
+                        <option value="Asia/Kolkata">IST - Indian Standard Time</option>
+                        <option value="Asia/Shanghai">CST - China Standard Time (Shanghai)</option>
+                        <option value="Asia/Tokyo">JST - Japan Standard Time (Tokyo)</option>
+                        <option value="Australia/Sydney">AEDT - Australian Eastern Time (Sydney)</option>
+                        <option value="Pacific/Auckland">NZDT - New Zealand Time (Auckland)</option>
+                    </select>
+                    <button class="modal-btn" onclick="addTimezone()">Add</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Search and Filter -->
         <div class="search-filter-section">
             <input 
