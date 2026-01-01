@@ -30,9 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
     renderTasks();
     updateStats();
     
-    // Load theme
-    const savedTheme = localStorage.getItem('toodoo-theme') || 'light';
-    document.body.setAttribute('data-theme', savedTheme);
+    // Load theme and check for voodoo activation
+    checkVoodooTheme();
 });
 
 // Add task on button click
@@ -77,6 +76,11 @@ function addTask() {
     renderTasks();
     updateStats();
     
+    // Check if "toodoo voodoo" task was added - activate vibrant theme
+    if (taskText.toLowerCase() === 'toodoo voodoo') {
+        activateVoodooTheme();
+    }
+    
     // Clear inputs and focus
     taskInput.value = '';
     if (descriptionInput) descriptionInput.value = '';
@@ -101,6 +105,9 @@ function deleteTask(id) {
     saveTasks();
     renderTasks();
     updateStats();
+    
+    // Check if voodoo theme should be deactivated
+    checkVoodooTheme();
 }
 
 // Function to clear all completed tasks
@@ -117,6 +124,9 @@ function clearCompleted() {
         saveTasks();
         renderTasks();
         updateStats();
+        
+        // Check if voodoo theme should be deactivated
+        checkVoodooTheme();
     }
 }
 
@@ -318,6 +328,8 @@ function editTask(id) {
     const task = tasks.find(t => t.id === id);
     if (!task) return;
     
+    const oldText = task.text;
+    
     const newText = prompt('Edit task:', task.text);
     if (newText && newText.trim()) {
         task.text = newText.trim();
@@ -351,6 +363,11 @@ function editTask(id) {
     saveTasks();
     renderTasks();
     updateStats();
+    
+    // Check if voodoo theme should be activated or deactivated based on text change
+    if (oldText.toLowerCase() === 'toodoo voodoo' || task.text.toLowerCase() === 'toodoo voodoo') {
+        checkVoodooTheme();
+    }
 }
 
 // Function to update statistics
@@ -590,13 +607,57 @@ function resetPomodoro() {
     }
 }
 
-// Theme toggle
+// Theme toggle - cycles through light -> dark -> voodoo -> light
 function toggleTheme() {
     const body = document.body;
     const currentTheme = body.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    let newTheme;
+    
+    // Cycle through themes: light -> dark -> voodoo -> light
+    if (currentTheme === 'light') {
+        newTheme = 'dark';
+    } else if (currentTheme === 'dark') {
+        newTheme = 'voodoo';
+    } else {
+        newTheme = 'light';
+    }
+    
     body.setAttribute('data-theme', newTheme);
     localStorage.setItem('toodoo-theme', newTheme);
+}
+
+// Check if voodoo theme should be active based on "toodoo voodoo" task
+function checkVoodooTheme() {
+    const hasVoodooTask = tasks.some(t => t.text.toLowerCase() === 'toodoo voodoo');
+    const currentTheme = localStorage.getItem('toodoo-theme') || 'light';
+    
+    if (hasVoodooTask) {
+        // Activate voodoo theme if not already active
+        if (currentTheme !== 'voodoo') {
+            activateVoodooTheme();
+        } else {
+            document.body.setAttribute('data-theme', 'voodoo');
+        }
+    } else {
+        // Deactivate voodoo theme if currently active
+        if (currentTheme === 'voodoo') {
+            deactivateVoodooTheme();
+        } else {
+            document.body.setAttribute('data-theme', currentTheme);
+        }
+    }
+}
+
+// Activate the vibrant voodoo theme
+function activateVoodooTheme() {
+    document.body.setAttribute('data-theme', 'voodoo');
+    localStorage.setItem('toodoo-theme', 'voodoo');
+}
+
+// Deactivate voodoo theme and return to light theme
+function deactivateVoodooTheme() {
+    document.body.setAttribute('data-theme', 'light');
+    localStorage.setItem('toodoo-theme', 'light');
 }
 
 // View switching
