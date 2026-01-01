@@ -74,7 +74,7 @@ body {
 
 header {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 24px;
 }
 
 .header-top {
@@ -113,7 +113,7 @@ header h1 {
 .list-tabs {
     display: flex;
     gap: 5px;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
     flex-wrap: wrap;
 }
 
@@ -141,7 +141,7 @@ header h1 {
 .view-switcher {
     display: flex;
     gap: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
     justify-content: center;
 }
 
@@ -167,15 +167,15 @@ header h1 {
 
 /* Search and Filter */
 .search-filter-section {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 }
 
 #searchInput {
     width: 100%;
-    padding: 10px 15px;
+    padding: 12px 15px;
     border: 1px solid var(--border-color);
     font-size: 1rem;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     background: var(--bg-primary);
     color: var(--text-primary);
     transition: all 0.3s;
@@ -215,8 +215,8 @@ header h1 {
 /* Pomodoro Timer */
 .pomodoro-section {
     text-align: center;
-    margin-bottom: 20px;
-    padding: 15px;
+    margin-bottom: 24px;
+    padding: 20px;
     border: 1px solid var(--border-color);
     background: var(--bg-secondary);
     transition: all 0.3s;
@@ -252,8 +252,9 @@ header h1 {
 
 .input-section {
     display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
 }
 
 .input-group {
@@ -318,6 +319,7 @@ header h1 {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s;
+    width: 100%;
 }
 
 #addBtn:hover {
@@ -331,7 +333,7 @@ header h1 {
 
 /* Progress Bar */
 .progress-container {
-    margin-bottom: 15px;
+    margin-bottom: 16px;
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
     height: 30px;
@@ -355,8 +357,8 @@ header h1 {
 .stats {
     display: flex;
     justify-content: space-around;
-    margin-bottom: 20px;
-    padding: 15px;
+    margin-bottom: 24px;
+    padding: 16px;
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
     transition: all 0.3s;
@@ -370,7 +372,7 @@ header h1 {
 
 .task-list {
     list-style: none;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
     max-height: 500px;
     overflow-y: auto;
 }
@@ -720,6 +722,11 @@ header h1 {
 
     .input-section {
         flex-direction: column;
+        gap: 12px;
+    }
+    
+    #addBtn {
+        width: 100%;
     }
 
     .stats {
